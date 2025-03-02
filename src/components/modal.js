@@ -9,7 +9,7 @@ export function openModal(popup) {
 
 export function closeModal(popup) {
     popup.classList.remove('popup_is-opened');
-    document.removeEventListener('сlick', closePopupEsc);
+    document.removeEventListener('keydown', closePopupEsc);
 }
 
 function closePopupEsc(evt) {
@@ -25,7 +25,7 @@ function closeByOverlay (popup) {
     popup.addEventListener('click', (event) => {
         event.stopPropagation();
         if (event.target === popup) {
-            popup.classList.remove('popup_is-opened');
+            closeModal(popup);
         } 
     });
 }
