@@ -22,7 +22,7 @@ const userJobElement = document.querySelector('.profile__description');
 
 const popupImage = document.querySelector('.popup_type_image');
 const imageElement = document.querySelector('.popup__image');
-const captionElement = document.querySelector('.popup__caption');
+const imagePopupCaptionElement = document.querySelector('.popup__caption');
 
 function fillProfilePopup() {
     nameInput.value = userNameElement.textContent;
@@ -45,8 +45,9 @@ function handleCardFormSubmit(evt) {
 
 function openImagePopup(cardName, cardLink) {
     openModal(popupImage);
-    captionElement.textContent = cardName;
+    imagePopupCaptionElement.textContent = cardName;
     imageElement.src = cardLink;
+    imageElement.alt = cardName;
 } 
 
 formElementEdit.addEventListener('submit', handleEditFormSubmit);
