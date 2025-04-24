@@ -1,2 +1,2 @@
 # Проектная работа Mesto
-https://github.com/lyubimovone/mesto-project-ff
+https://lyubimovone.github.io/mesto-project-ff/
