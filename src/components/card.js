@@ -1,32 +1,36 @@
-const cardTemplate = document.querySelector('#card-template').content;
-
-export function handleLikeClick(evt) {
-    const cardLikeButton = evt.target;
-    cardLikeButton.classList.toggle('card__like-button_is-active');
-}
-
-export function createCard(cardName, cardLink, deleteHandler, openImagePopup) {
+export function createCard(cardData, currentUserId, handlers) {
+    const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
-    const cardDeleteButton = cardElement.querySelector('.card__delete-button');
     const cardImage = cardElement.querySelector('.card__image');
-    const cardLike = cardElement.querySelector('.card__like-button');
+    const cardTitle = cardElement.querySelector('.card__title');
+    const deleteButton = cardElement.querySelector('.card__delete-button');
+    const likeButton = cardElement.querySelector('.card__like-button');
+    const likeCounter = cardElement.querySelector('.card__like-count');
 
-    cardImage.src = cardLink;
-    cardImage.alt = cardName;
-    cardElement.querySelector('.card__title').textContent = cardName;
+    cardImage.src = cardData.link;
+    cardImage.alt = cardData.name;
+    cardTitle.textContent = cardData.name;
+    likeCounter.textContent = cardData.likes.length;
 
-    cardDeleteButton.addEventListener('click', deleteHandler);
+    if (cardData.owner._id !== currentUserId) {
+        deleteButton.remove();
+    }
 
-    cardLike.addEventListener('click', handleLikeClick);
+    if (cardData.likes.some(like => like._id === currentUserId)) {
+        likeButton.classList.add('card__like-button_is-active');
+    }
 
-    cardImage.addEventListener('click', function() {
-        openImagePopup(cardName, cardLink);
+    deleteButton.addEventListener('click', () => {
+        handlers.handleDeleteClick(cardData._id, cardElement);
+    });
+
+    likeButton.addEventListener('click', () => {
+        handlers.handleLikeClick(cardData._id, likeButton, likeCounter);
+    });
+
+    cardImage.addEventListener('click', () => {
+        handlers.handleImageClick(cardData.name, cardData.link);
     });
 
     return cardElement;
-}
-
-export function deleteCard(evt) {
-    const card = evt.target.closest('.card');
-    card.remove();
 }

@@ -1,15 +1,15 @@
 export function initModal(popup) {
-    const closeButton = popup.querySelector('.popup__close'); 
+    const closeButton = popup.querySelector('.popup__close');
     closeButton.addEventListener('click', () => closeModal(popup));
-    popup.addEventListener('click', (event) => {
+    popup.addEventListener('mousedown', (event) => {
         if (event.target === popup) {
             closeModal(popup);
         }
     });
 }
+
 export function openModal(popup) {
     popup.classList.add('popup_is-opened');
-    popup.classList.add('popup_is-animated'); 
     document.addEventListener('keydown', closePopupEsc);
 }
 
