@@ -1,5 +1,5 @@
 import './pages/index.css';
-import { createCard } from './components/card.js';
+import { createCard, handleDeleteClick, handleLikeClick } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
 import { enableValidation, clearValidation } from './components/validation.js';
 import {
@@ -7,9 +7,6 @@ import {
     getInitialCards,
     updateUserInfo,
     addNewCard,
-    deleteCard,
-    likeCard,
-    unlikeCard,
     updateAvatar
 } from './components/api.js';
 
@@ -38,6 +35,13 @@ const elements = {
     cardForm: document.querySelector('.popup__form_new-card'),
     avatarForm: document.querySelector('.popup__form_avatar')
 };
+
+function handleImageClick(name, link) {
+    elements.imagePopup.querySelector('.popup__image').src = link;
+    elements.imagePopup.querySelector('.popup__image').alt = name;
+    elements.imagePopup.querySelector('.popup__caption').textContent = name;
+    openModal(elements.imagePopup);
+}
 
 const handleProfileFormSubmit = (evt) => {
     evt.preventDefault();
@@ -69,31 +73,7 @@ const handleAddCardFormSubmit = (evt) => {
         elements.cardForm.elements.link.value
     )
         .then((newCard) => {
-            const cardHandlers = {
-                handleDeleteClick: (cardId, cardElement) => {
-                    deleteCard(cardId)
-                        .then(() => cardElement.remove())
-                        .catch(console.error);
-                },
-                handleLikeClick: (cardId, likeButton, likeCounter) => {
-                    const method = likeButton.classList.contains('card__like-button_is-active')
-                        ? unlikeCard
-                        : likeCard;
-                    method(cardId)
-                        .then((card) => {
-                            likeCounter.textContent = card.likes.length;
-                            likeButton.classList.toggle('card__like-button_is-active');
-                        })
-                        .catch(console.error);
-                },
-                handleImageClick: (name, link) => {
-                    elements.imagePopup.querySelector('.popup__image').src = link;
-                    elements.imagePopup.querySelector('.popup__image').alt = name;
-                    elements.imagePopup.querySelector('.popup__caption').textContent = name;
-                    openModal(elements.imagePopup);
-                }
-            };
-            elements.cardsList.prepend(createCard(newCard, newCard.owner._id, cardHandlers));
+            elements.cardsList.prepend(createCard(newCard, newCard.owner._id, handleImageClick));
             elements.cardForm.reset();
             closeModal(elements.cardPopup);
         })
@@ -128,33 +108,8 @@ const init = () => {
             elements.profileDescription.textContent = userData.about;
             elements.profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
 
-            const cardHandlers = {
-                handleDeleteClick: (cardId, cardElement) => {
-                    deleteCard(cardId)
-                        .then(() => cardElement.remove())
-                        .catch(console.error);
-                },
-                handleLikeClick: (cardId, likeButton, likeCounter) => {
-                    const method = likeButton.classList.contains('card__like-button_is-active')
-                        ? unlikeCard
-                        : likeCard;
-                    method(cardId)
-                        .then((card) => {
-                            likeCounter.textContent = card.likes.length;
-                            likeButton.classList.toggle('card__like-button_is-active');
-                        })
-                        .catch(console.error);
-                },
-                handleImageClick: (name, link) => {
-                    elements.imagePopup.querySelector('.popup__image').src = link;
-                    elements.imagePopup.querySelector('.popup__image').alt = name;
-                    elements.imagePopup.querySelector('.popup__caption').textContent = name;
-                    openModal(elements.imagePopup);
-                }
-            };
-
             cards.forEach(card => {
-                elements.cardsList.append(createCard(card, userData._id, cardHandlers));
+                elements.cardsList.append(createCard(card, userData._id, handleImageClick));
             });
         })
         .catch(console.error);
